@@ -1,8 +1,47 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:pbpyahu/Dashboardnya.dart';
+
 
 class Loginnya extends StatefulWidget {
+  const Loginnya({super.key});
+
   @override
-  _LoginnyaState createState() => _LoginnyaState();
+  State<Loginnya> createState() => _LoginnyaState();
+}
+
+Future<void> loginUser(
+    String username, String password, BuildContext context) async {
+  final url = Uri.parse('http://localhost:3000/login');
+
+  try {
+    final response = await http.post(
+      url,
+      body: json.encode({'username': username, 'password': password}),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      final accessToken = responseData['accessToken'];
+      // Lakukan sesuatu dengan token, seperti menyimpannya ke SharedPreferences
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => Dashboardnya(
+                  accessToken: accessToken,
+                )),
+      );
+    } else {
+      final errorMessage = json.decode(response.body)['message'];
+      print(errorMessage);
+    }
+  } catch (error) {
+    print('Error: $error');
+  }
 }
 
 class _LoginnyaState extends State<Loginnya> {
@@ -45,7 +84,7 @@ class _LoginnyaState extends State<Loginnya> {
                         children: [
                           TextField(
                             controller: _usernameController,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: 'Username',
                               prefixIcon: Icon(Icons.person),
                             ),
@@ -53,7 +92,7 @@ class _LoginnyaState extends State<Loginnya> {
                           TextField(
                             controller: _passwordController,
                             obscureText: true,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: 'Password',
                               prefixIcon: Icon(Icons.lock),
                             ),
@@ -61,25 +100,16 @@ class _LoginnyaState extends State<Loginnya> {
                           SizedBox(height: 20),
                           ElevatedButton(
                             onPressed: () {
-                              // Logika login di sini ye
+                              loginUser(
+                                _usernameController.text,
+                                _passwordController.text,
+                                context,
+                              );
                             },
                             child: Text('Login'),
                             style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all(Color.fromARGB(255, 67, 29, 114)),
-                              foregroundColor:
-                                  MaterialStateProperty.all(Colors.white),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          ElevatedButton(
-                            onPressed: () {
-                              // Logika registrasi di sini yee
-                            },
-                            child: Text('Register'),
-                            style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all(Color.fromARGB(255, 67, 29, 114)),
+                              backgroundColor: MaterialStateProperty.all(
+                                  Color.fromARGB(255, 67, 29, 114)),
                               foregroundColor:
                                   MaterialStateProperty.all(Colors.white),
                             ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'Loginnya.dart';
-import 'Registrasi.dart';
 import 'Transaksi.dart';
 import 'DetailTransaksinya.dart';
 import 'Dashboardnya.dart'; // Import DashboardPage
@@ -17,14 +16,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/transaction-detail', 
-      routes: {
-        '/login': (context) => Loginnya(),
-        '/register': (context) => Registrasi(),
-        '/dashboard': (context) => Dashboardnya(), 
-        '/transaction': (context) => Transaksi(),
-        '/transaction-detail': (context) => DetailTransaksinya(),
-      },
+      home: Loginnya(),
+      // initialRoute: '/transaction-detail',
+      // routes: {
+      //   '/login': (context) => Loginnya(),
+      //   '/register': (context) => Registrasi(),
+      //   '/dashboard': (context) => Dashboardnya(),
+      //   '/transaction': (context) => Transaksi(),
+      //   '/transaction-detail': (context) => DetailTransaksinya(),
+      // },
     );
   }
 }
